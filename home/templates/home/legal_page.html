@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/legal_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="legal-page">
+  <div class="container legal-container">
+
+    <article class="legal-card reveal">
+
+      <header class="legal-top">
+        <div class="legal-meta">
+          {% if page.updated_at %}
+            {% if request.LANGUAGE_CODE|slice:":2" == "en" %}
+              Updated: {{ page.updated_at|date:"d.m.Y" }}
+            {% elif request.LANGUAGE_CODE|slice:":2" == "kk" %}
+              Жаңартылды: {{ page.updated_at|date:"d.m.Y" }}
+            {% else %}
+              Обновлено: {{ page.updated_at|date:"d.m.Y" }}
+            {% endif %}
+          {% else %}
+            {% if request.LANGUAGE_CODE|slice:":2" == "en" %}
+              Document
+            {% elif request.LANGUAGE_CODE|slice:":2" == "kk" %}
+              Құжат
+            {% else %}
+              Документ
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <h1 class="legal-title">{{ page.title }}</h1>
+
+        {% if page.intro %}
+          <p class="legal-intro">{{ page.intro }}</p>
+        {% endif %}
+      </header>
+
+      {% if page.body %}
+        <div class="legal-body">
+          {{ page.body|richtext }}
+        </div>
+      {% endif %}
+
+    </article>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% load wagtailimages_tags %}
+
+<section class="psec pfeatures" id="{{ value.section_id|default:'features' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+    {% if value.subtitle %}<p class="psub">{{ value.subtitle }}</p>{% endif %}
+  </div>
+
+  <div class="pcards-grid">
+    {% for c in value.cards %}
+      <article class="pcard">
+        <div class="pcard-top">
+          <div class="pcard-ic">
+            {% if c.icon %}
+              {% image c.icon fill-72x72 as ic %}
+              <img src="{{ ic.url }}" alt="{{ c.title }}">
+            {% else %}
+              <div class="pcard-ic-fallback"></div>
+            {% endif %}
+          </div>
+          <div class="pcard-title">{{ c.title }}</div>
+        </div>
+        {% if c.text %}<div class="pcard-text">{{ c.text }}</div>{% endif %}
+        <div class="pcard-glow" aria-hidden="true"></div>
+      </article>
+    {% endfor %}
+  </div>
+</section>

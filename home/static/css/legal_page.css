@@ -1,0 +1,133 @@
+/* =========================
+   LEGAL PAGE (Privacy / Terms)
+   ========================= */
+
+.legal-page{
+  padding: 100px 0 90px;
+}
+
+.legal-container{
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.legal-card{
+  border: 1px solid rgba(31,41,55,0.9);
+  background: linear-gradient(
+    180deg,
+    rgba(11,17,32,0.95),
+    rgba(5,8,22,0.92)
+  );
+  border-radius: var(--radius-xl);
+  padding: 34px 34px 32px;
+  box-shadow: 0 22px 60px rgba(2,6,23,0.55);
+}
+
+/* ===== TOP ===== */
+
+.legal-top{
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(31,41,55,0.75);
+}
+
+.legal-meta{
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(156,163,175,0.9);
+  margin-bottom: 10px;
+}
+
+.legal-title{
+  font-size: 38px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+.legal-intro{
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ===== BODY ===== */
+
+.legal-body{
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(229,231,235,0.95);
+}
+
+.legal-body h2{
+  font-size: 22px;
+  margin: 26px 0 12px;
+  line-height: 1.3;
+}
+
+.legal-body h3{
+  font-size: 18px;
+  margin: 22px 0 10px;
+  line-height: 1.35;
+  color: rgba(243,244,246,0.95);
+}
+
+.legal-body p{
+  margin: 0 0 14px;
+  color: rgba(209,213,219,0.9);
+}
+
+.legal-body ul,
+.legal-body ol{
+  margin: 0 0 18px;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  color: rgba(209,213,219,0.9);
+}
+
+.legal-body a{
+  color: var(--primary-light);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(96,165,250,0.4);
+  transition: color .15s ease, border-color .15s ease;
+}
+
+.legal-body a:hover{
+  color: #ffffff;
+  border-color: rgba(96,165,250,0.8);
+}
+
+.legal-body hr{
+  border: none;
+  border-top: 1px solid rgba(31,41,55,0.75);
+  margin: 24px 0;
+}
+
+.legal-page .reveal{
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 768px){
+  .legal-page{
+    padding: 80px 0 70px;
+  }
+
+  .legal-card{
+    padding: 22px 20px 20px;
+  }
+
+  .legal-title{
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px){
+  .legal-title{
+    font-size: 26px;
+  }
+}

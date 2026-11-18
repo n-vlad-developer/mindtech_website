@@ -1,0 +1,44 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+<section class="psec phero" id="top">
+  <div class="phero-grid">
+    <div class="phero-left">
+      <div class="phero-title">{{ value.title }}</div>
+      {% if value.subtitle %}<div class="phero-sub">{{ value.subtitle }}</div>{% endif %}
+
+      {% if value.quick_items %}
+        <div class="phero-facts">
+            {% for t in value.quick_items %}
+            <span class="pfact">
+                <span class="pfact-dot" aria-hidden="true"></span>
+                {% spaceless %}
+                    <span class="pfact-text">{{ t|striptags|cut:"•"|cut:"  " }}</span>
+                {% endspaceless %}
+
+            </span>
+            {% endfor %}
+        </div>
+      {% endif %}
+
+
+      <div class="phero-actions">
+        {% if value.primary_url %}
+          <a class="btn-primary" href="{{ value.primary_url }}">{{ value.primary_text }}</a>
+        {% endif %}
+        {% if value.secondary_anchor %}
+          <a class="btn-secondary" href="#{{ value.secondary_anchor }}">{{ value.secondary_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="phero-right">
+      {% if value.cover %}
+        {% image value.cover fill-980x740 as cv %}
+        <img class="phero-cover" src="{{ cv.url }}" alt="{{ value.cover_alt|default:value.title }}">
+      {% else %}
+        <div class="phero-cover phero-cover--empty"></div>
+      {% endif %}
+      <div class="phero-glow" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>

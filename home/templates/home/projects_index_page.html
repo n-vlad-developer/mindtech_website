@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags i18n %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/projects.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<section class="hero projects-hero">
+  <div class="hero-orbit" aria-hidden="true">
+    <span class="orbit-dot dot-1"></span>
+    <span class="orbit-dot dot-2"></span>
+    <span class="orbit-dot dot-3"></span>
+  </div>
+
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>{{ page.intro_title }}</h2>
+      <p>{{ page.intro_text }}</p>
+    </div>
+
+    <div class="projects-grid reveal">
+      {% for p in projects %}
+        <article class="project-card">
+          <div class="project-card-top">
+            <div class="project-card-icon">
+              {% if p.card_icon %}
+                {% image p.card_icon fill-96x96 as ic %}
+                <img src="{{ ic.url }}" alt="{{ p.get_card_title }}">
+              {% else %}
+                <div class="project-card-icon-fallback"></div>
+              {% endif %}
+            </div>
+
+            <div class="project-card-meta">
+              <div class="project-card-title">{{ p.get_card_title }}</div>
+              <div class="project-card-desc">{{ p.card_description }}</div>
+            </div>
+          </div>
+
+          <div class="project-card-actions">
+            <a class="btn-primary project-card-btn" href="{{ p.get_cta_url }}">
+              {{ p.external_label|default:_("Learn more") }}
+            </a>
+          </div>
+
+          <div class="project-card-glow" aria-hidden="true"></div>
+        </article>
+      {% empty %}
+        <div class="projects-empty">
+          {% if request.LANGUAGE_CODE|slice:":2" == "ru" %}
+            В данный момент проектов нет
+          {% else %}
+            There are't projects at the moment
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

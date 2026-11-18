@@ -1,0 +1,16 @@
+<section class="psec psteps" id="{{ value.section_id|default:'flow' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+    {% if value.subtitle %}<p class="psub">{{ value.subtitle }}</p>{% endif %}
+  </div>
+
+  <div class="psteps-grid">
+    {% for s in value.steps %}
+      <div class="pstep">
+        <div class="pstep-n">{{ forloop.counter }}</div>
+        <div class="pstep-title">{{ s.title }}</div>
+        {% if s.text %}<div class="pstep-text">{{ s.text }}</div>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>

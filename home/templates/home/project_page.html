@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags %}
+{% load i18n %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+<link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section project-detail">
+  <div class="hero-orbit" aria-hidden="true">
+    <span class="orbit-dot dot-1"></span>
+    <span class="orbit-dot dot-2"></span>
+    <span class="orbit-dot dot-3"></span>
+  </div>
+
+  <div class="container">
+
+    <div class="project-head reveal">
+      <div class="project-head-icon">
+        {% if page.card_icon %}
+          {% image page.card_icon fill-120x120 as ic %}
+          <img src="{{ ic.url }}" alt="{{ page.title }}">
+        {% else %}
+          <div class="project-head-icon-fallback"></div>
+        {% endif %}
+      </div>
+
+      <div class="project-head-text">
+        <div class="project-head-title">{{ page.title }}</div>
+        {% if page.card_description %}
+          <div class="project-head-sub">{{ page.card_description }}</div>
+        {% endif %}
+
+        <div class="project-head-actions">
+          {% if page.external_url %}
+            <a class="btn-primary" href="{{ page.external_url }}" target="_blank" rel="noopener">
+              {{ page.external_label|default:"Открыть" }}
+            </a>
+          {% endif %}
+          <a class="btn-secondary" href="{{ page.get_parent.url }}">
+            {% if request.LANGUAGE_CODE|slice:":2" == "en" %}
+              Back to projects
+            {% else %}
+              Назад к проектам
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-body">
+      {% for block in page.body %}
+        <div class="reveal">
+          {% include_block block %}
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

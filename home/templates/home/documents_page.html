@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/documents.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="documents-page">
+  <div class="documents-page__wrap">
+
+    <div class="documents-page__header">
+      <h1 class="documents-page__title">{{ page.title }}</h1>
+
+      {% if page.intro %}
+        <p class="documents-page__intro">{{ page.intro }}</p>
+      {% endif %}
+    </div>
+
+    <div class="documents-page__list">
+      {% for document in page.get_children.live.specific %}
+        <a href="{% pageurl document %}" class="documents-page__item">
+
+          <span class="documents-page__icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7 3.75h6.2L17.25 7.8V20.25H7V3.75Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M13 3.75V8h4.25"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9.5 12h5"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+              <path
+                d="M9.5 15.5h5"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
+
+          <span class="documents-page__content">
+            <span class="documents-page__name">
+              {{ document.title }}
+            </span>
+
+            {% if document.updated_at %}
+              <span class="documents-page__meta">
+                Обновлено: {{ document.updated_at|date:"d.m.Y" }}
+              </span>
+            {% endif %}
+          </span>
+
+          <span class="documents-page__arrow" aria-hidden="true">
+            →
+          </span>
+
+        </a>
+      {% empty %}
+        <div class="documents-page__empty">
+          Документы пока не добавлены.
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

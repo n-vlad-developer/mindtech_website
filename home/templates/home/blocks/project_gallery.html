@@ -1,0 +1,20 @@
+{% load wagtailimages_tags %}
+
+<section class="psec pgallery" id="{{ value.section_id|default:'gallery' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+  </div>
+
+  {% if value.images %}
+    <div class="pgallery-grid">
+      {% for im in value.images %}
+        {% image im max-1600x1200 as gi %}
+        <a class="pgallery-item" href="{{ gi.url }}" target="_blank" rel="noopener">
+          <img src="{{ gi.url }}" alt="" loading="lazy">
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="pmuted">Добавь изображения в блок “Галерея”.</div>
+  {% endif %}
+</section>

@@ -1,0 +1,18 @@
+<section class="section section-light" id="{{ value.section_id|default:'process' }}">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>{{ value.title }}</h2>
+      {% if value.text %}<p>{{ value.text }}</p>{% endif %}
+    </div>
+
+    <div class="steps">
+      {% for s in value.steps %}
+        <div class="step reveal">
+          <span class="step-number">{{ s.number }}</span>
+          <h3>{{ s.title }}</h3>
+          {% if s.text %}<p>{{ s.text }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

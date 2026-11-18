@@ -1,0 +1,19 @@
+<section class="psec psteps" id="{{ value.section_id|default:'steps' }}">
+  <div class="psteps-head">
+    <h3 class="psteps-title">{{ value.title }}</h3>
+    {% if value.subtitle %}<p class="psteps-sub">{{ value.subtitle }}</p>{% endif %}
+  </div>
+
+  <div class="psteps-list">
+    {% for b in value.bullets %}
+      <div class="psteps-item">
+        <span class="psteps-dot" aria-hidden="true"></span>
+        <div class="psteps-text">{{ b.text }}</div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if value.bottom_text %}
+    <div class="psteps-bottom">{{ value.bottom_text }}</div>
+  {% endif %}
+</section>

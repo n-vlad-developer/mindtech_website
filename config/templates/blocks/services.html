@@ -1,0 +1,17 @@
+<section class="section" id="{{ value.section_id|default:'services' }}">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>{{ value.title }}</h2>
+      {% if value.text %}<p>{{ value.text }}</p>{% endif %}
+    </div>
+
+    <div class="cards three">
+      {% for c in value.cards %}
+        <article class="card reveal">
+          <h3>{{ c.title }}</h3>
+          <p>{{ c.text }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

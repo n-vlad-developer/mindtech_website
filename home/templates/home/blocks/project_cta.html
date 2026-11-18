@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<section class="psec pcta" id="{{ value.section_id|default:'cta' }}">
+  <div class="pcta-card">
+    <div class="pcta-content">
+      <div class="pcta-title">{{ value.title }}</div>
+
+      {% if value.text %}
+        <div class="pcta-text">{{ value.text }}</div>
+      {% endif %}
+    </div>
+
+    {% with lang=request.LANGUAGE_CODE|slice:":2" %}
+    <div class="pcta-actions">
+
+      {# ===== PRIMARY (Написать нам) ===== #}
+      {% with u=value.primary_url|default:'' %}
+        {% if u|slice:":1" == "#" %}
+          {# якорь -> всегда на главную текущего языка #}
+          <a class="btn-primary" href="/{{ lang }}/{{ u }}">{{ value.primary_text }}</a>
+
+        {% elif u|slice:":1" == "/" %}
+          {# путь -> добавляем язык, если его нет #}
+          {% if u|slice:":4" == "/ru/" or u|slice:":4" == "/en/" %}
+            <a class="btn-primary" href="{{ u }}">{{ value.primary_text }}</a>
+          {% else %}
+            <a class="btn-primary" href="/{{ lang }}{{ u }}">{{ value.primary_text }}</a>
+          {% endif %}
+
+        {% else %}
+          {# внешний или странный -> как есть #}
+          <a class="btn-primary" href="{{ u }}">{{ value.primary_text }}</a>
+        {% endif %}
+      {% endwith %}
+
+      {# ===== SECONDARY (Наверх) ===== #}
+      {% with u=value.secondary_url|default:'' %}
+        {% if u|slice:":1" == "#" %}
+          <a class="btn-secondary" href="/{{ lang }}/{{ u }}">
+            {% if lang == "en" %}Up{% else %}Наверх{% endif %}
+          </a>
+
+        {% elif u|slice:":1" == "/" %}
+          {% if u|slice:":4" == "/ru/" or u|slice:":4" == "/en/" %}
+            <a class="btn-secondary" href="{{ u }}">
+              {% if lang == "en" %}Up{% else %}Наверх{% endif %}
+            </a>
+          {% else %}
+            <a class="btn-secondary" href="/{{ lang }}{{ u }}">
+              {% if lang == "en" %}Up{% else %}Наверх{% endif %}
+            </a>
+          {% endif %}
+
+        {% else %}
+          <a class="btn-secondary" href="{{ u }}">
+            {% if lang == "en" %}Up{% else %}Наверх{% endif %}
+          </a>
+        {% endif %}
+      {% endwith %}
+
+    </div>
+    {% endwith %}
+
+    <div class="pcta-glow" aria-hidden="true"></div>
+  </div>
+</section>

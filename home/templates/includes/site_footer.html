@@ -1,0 +1,55 @@
+{% load wagtailcore_tags wagtailimages_tags static site_tags %}
+
+{% with branding=settings.home.SiteBrandingSettings %}
+{% with current=request.LANGUAGE_CODE|slice:":2" %}
+
+<footer class="footer">
+  <div class="container footer-inner reveal">
+
+    <span class="footer-copy">
+      ©
+      {% if current == "en" %}
+        {{ branding.brand_title_en|default:branding.brand_title }}
+      {% elif current == "kk" %}
+        {{ branding.brand_title_kk|default:branding.brand_title }}
+      {% else %}
+        {{ branding.brand_title }}
+      {% endif %},
+      <span id="year"></span>
+    </span>
+
+    <div class="footer-mid">
+
+      <div class="footer-tagline">
+        {% if current == "en" %}
+          {{ branding.footer_tagline_en|default:branding.footer_tagline }}
+        {% elif current == "kk" %}
+          {{ branding.footer_tagline_kk|default:branding.footer_tagline }}
+        {% else %}
+          {{ branding.footer_tagline }}
+        {% endif %}
+      </div>
+
+      {% if branding.documents_page %}
+        <div class="footer-legal-line">
+          {% with p=branding.documents_page.localized %}
+            <a href="{% pageurl p %}">
+              {% if current == "en" %}
+                Documents
+              {% elif current == "kk" %}
+                Құжаттар
+              {% else %}
+                Документы
+              {% endif %}
+            </a>
+          {% endwith %}
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</footer>
+
+{% endwith %}
+{% endwith %}

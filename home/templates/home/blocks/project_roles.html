@@ -1,0 +1,32 @@
+{% load wagtailimages_tags %}
+
+<section class="psec proles" id="{{ value.section_id|default:'roles' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+    {% if value.subtitle %}<p class="psub">{{ value.subtitle }}</p>{% endif %}
+  </div>
+
+  <div class="pcards-grid">
+    {% for r in value.roles %}
+      <article class="pcard">
+        <div class="pcard-top">
+          <div class="pcard-ic">
+            {% if r.icon %}
+              {% image r.icon fill-92x92 as ic %}
+              <img src="{{ ic.url }}" alt="{{ r.title }}">
+            {% else %}
+              <div class="pcard-ic-fallback"></div>
+            {% endif %}
+          </div>
+          <div class="pcard-title">{{ r.title }}</div>
+        </div>
+        {% if r.text %}<div class="pcard-text">{{ r.text }}</div>{% endif %}
+        <div class="pcard-glow" aria-hidden="true"></div>
+      </article>
+    {% endfor %}
+  </div>
+
+  {% if value.bottom_text %}
+        <div class="psteps-bottom-rol">{{ value.bottom_text }}</div>
+    {% endif %}
+</section>

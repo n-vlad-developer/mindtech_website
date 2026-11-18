@@ -1,0 +1,479 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% with branding=settings.home.SiteBrandingSettings %}
+{% with current=request.LANGUAGE_CODE|slice:":2" %}
+
+<section
+  class="section section-footer-mega"
+  id="{{ value.section_id|default:'contacts' }}"
+>
+  <div class="container footer-mega reveal">
+
+    <div class="footer-mega-top">
+
+      <div class="footer-company">
+
+        <h2 class="footer-mega-title">
+          {{ value.title }}
+        </h2>
+
+        {% if value.text %}
+          <p class="footer-mega-text">
+            {{ value.text }}
+          </p>
+        {% endif %}
+
+
+        {% if branding.is_astana_hub_resident %}
+          <div class="hub-inline">
+
+            <span
+              class="hub-dot-neon"
+              aria-hidden="true"
+            ></span>
+
+            {% if branding.astana_hub_logo %}
+              <img
+                class="hub-logo-inline"
+                src="{{ branding.astana_hub_logo.file.url }}"
+                alt="Astana Hub"
+                loading="lazy"
+              >
+            {% endif %}
+
+
+            {% if branding.astana_hub_url %}
+
+              <a
+                href="{{ branding.astana_hub_url }}"
+                target="_blank"
+                rel="noopener"
+                class="hub-text-inline"
+              >
+                {% if current == "en" %}
+                  {{ branding.astana_hub_text_en|default:"Astana Hub resident" }}
+
+                {% elif current == "kk" %}
+                  {{ branding.astana_hub_text_kk|default:"Astana Hub резиденті" }}
+
+                {% else %}
+                  {{ branding.astana_hub_text_ru|default:"Резидент Astana Hub" }}
+                {% endif %}
+              </a>
+
+            {% else %}
+
+              <span class="hub-text-inline">
+
+                {% if current == "en" %}
+                  {{ branding.astana_hub_text_en|default:"Astana Hub resident" }}
+
+                {% elif current == "kk" %}
+                  {{ branding.astana_hub_text_kk|default:"Astana Hub резиденті" }}
+
+                {% else %}
+                  {{ branding.astana_hub_text_ru|default:"Резидент Astana Hub" }}
+                {% endif %}
+
+              </span>
+
+            {% endif %}
+
+          </div>
+        {% endif %}
+
+
+        {% if value.bullets %}
+          <ul class="footer-bullets">
+
+            {% for b in value.bullets %}
+              <li>{{ b }}</li>
+            {% endfor %}
+
+          </ul>
+        {% endif %}
+
+      </div>
+
+
+      <div class="footer-partners">
+
+        <div class="footer-block-title">
+          {{ value.partners_title }}
+        </div>
+
+        {% with partners=partners_list %}
+
+          {% if partners %}
+
+            <div class="partners-grid">
+
+              {% for p in partners %}
+
+                <div
+                  class="partner-card"
+                  title="{{ p.name }}"
+                >
+
+                  {% if p.url %}
+
+                    <a
+                      href="{{ p.url }}"
+                      target="_blank"
+                      rel="noopener"
+                      class="partner-link"
+                    >
+
+                      {% image p.logo fill-780x780 as lg %}
+
+                      <img
+                        src="{{ lg.url }}"
+                        alt="{{ p.name }}"
+                      >
+
+                    </a>
+
+                  {% else %}
+
+                    {% image p.logo fill-780x780 as lg %}
+
+                    <img
+                      src="{{ lg.url }}"
+                      alt="{{ p.name }}"
+                    >
+
+                  {% endif %}
+
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+          {% else %}
+
+            <div class="footer-muted">
+
+              {% if current == "en" %}
+                Add partner logos in Snippets.
+
+              {% elif current == "kk" %}
+                Серіктестердің логотиптерін Snippets бөліміне қосыңыз.
+
+              {% else %}
+                Добавь логотипы партнёров в Snippets.
+              {% endif %}
+
+            </div>
+
+          {% endif %}
+
+        {% endwith %}
+
+      </div>
+
+    </div>
+
+
+    <div class="footer-mega-bottom">
+
+      <div class="footer-contacts">
+
+        <div class="footer-block-title">
+          {{ value.contacts_title }}
+        </div>
+
+
+        {% if contacts_list %}
+
+          <div class="contacts-cards">
+
+            {% for c in contacts_list %}
+
+              <div class="contacts-card">
+
+                <div class="contacts-card-label">
+                  {{ c.label }}
+                </div>
+
+                {% with href=c.get_href %}
+
+                  {% if href %}
+
+                    <a
+                      class="contacts-card-value"
+                      href="{{ href }}"
+                      {% if c.kind != "email" and c.kind != "phone" %}
+                        target="_blank"
+                        rel="noopener"
+                      {% endif %}
+                    >
+                      {{ c.value }}
+                    </a>
+
+                  {% else %}
+
+                    <div class="contacts-card-value">
+                      {{ c.value }}
+                    </div>
+
+                  {% endif %}
+
+                {% endwith %}
+
+              </div>
+
+            {% endfor %}
+
+          </div>
+
+        {% else %}
+
+          <div class="footer-muted">
+
+            {% if current == "en" %}
+              Add contacts in Snippets.
+
+            {% elif current == "kk" %}
+              Контактілерді Snippets бөліміне қосыңыз.
+
+            {% else %}
+              Добавь контакты в Snippets.
+            {% endif %}
+
+          </div>
+
+        {% endif %}
+
+
+        {% if socials_list %}
+
+          <div class="socials-row">
+
+            {% for s in socials_list %}
+
+              <a
+                class="social-pill"
+                href="{{ s.url }}"
+                target="_blank"
+                rel="noopener"
+                aria-label="{{ s.title }}"
+                title="{{ s.title }}"
+              >
+
+                <span class="social-icwrap">
+
+                  {% if s.icon_image %}
+
+                    {% image s.icon_image fill-32x32 as si %}
+
+                    <img
+                      class="social-img"
+                      src="{{ si.url }}"
+                      alt="{{ s.title }}"
+                    >
+
+                  {% else %}
+
+                    <span class="social-fallback">
+                      {{ s.title|slice:":1"|upper }}
+                    </span>
+
+                  {% endif %}
+
+                </span>
+
+                <span class="social-tx">
+                  {{ s.title }}
+                </span>
+
+              </a>
+
+            {% endfor %}
+
+          </div>
+
+        {% endif %}
+
+      </div>
+
+
+      <div class="footer-form">
+
+        <div class="footer-block-title">
+          {{ value.form_title }}
+        </div>
+
+        <form
+          class="contact-form"
+          method="post"
+          action="{% url 'contact_submit' %}"
+        >
+
+          {% csrf_token %}
+
+          <input
+            type="text"
+            name="company_hp"
+            class="hp-field"
+            autocomplete="off"
+            tabindex="-1"
+          >
+
+
+          <div class="form-grid">
+
+            <label class="f">
+
+              <span>
+                {% if current == "en" %}
+                  Name
+                {% elif current == "kk" %}
+                  Аты
+                {% else %}
+                  Имя
+                {% endif %}
+              </span>
+
+              <input
+                name="name"
+                required
+                maxlength="80"
+
+                {% if current == "en" %}
+                  placeholder="How should we address you"
+                {% elif current == "kk" %}
+                  placeholder="Сізге қалай жүгінуге болады?"
+                {% else %}
+                  placeholder="Как к вам обращаться"
+                {% endif %}
+              >
+
+            </label>
+
+
+            <label class="f">
+
+              <span>
+                {% if current == "en" %}
+                  Contact
+                {% elif current == "kk" %}
+                  Байланыс
+                {% else %}
+                  Контакт
+                {% endif %}
+              </span>
+
+              <input
+                name="contact"
+                required
+                maxlength="120"
+
+                {% if current == "en" %}
+                  placeholder="Email or phone number"
+                {% elif current == "kk" %}
+                  placeholder="Email немесе телефон"
+                {% else %}
+                  placeholder="Email или телефон"
+                {% endif %}
+              >
+
+            </label>
+
+          </div>
+
+
+          <label class="f">
+
+            <span>
+              {% if current == "en" %}
+                Message
+              {% elif current == "kk" %}
+                Хабарлама
+              {% else %}
+                Сообщение
+              {% endif %}
+            </span>
+
+            <textarea
+              name="message"
+              required
+              rows="4"
+              maxlength="2000"
+
+              {% if current == "en" %}
+                placeholder="Briefly describe your request"
+              {% elif current == "kk" %}
+                placeholder="Тапсырманы қысқаша сипаттаңыз"
+              {% else %}
+                placeholder="Коротко опишите задачу"
+              {% endif %}
+            ></textarea>
+
+          </label>
+
+
+          <div class="form-actions">
+
+            <button
+              class="btn-primary"
+              type="submit"
+            >
+
+              {% if current == "en" %}
+                Send
+              {% elif current == "kk" %}
+                Жіберу
+              {% else %}
+                Отправить
+              {% endif %}
+
+            </button>
+
+
+            <div class="form-hint">
+
+              {% if current == "en" %}
+
+                We will reply by email or messenger.
+
+              {% elif current == "kk" %}
+
+                Email немесе мессенджер арқылы жауап береміз.
+
+              {% else %}
+
+                Ответим на почту или в мессенджер.
+
+              {% endif %}
+
+            </div>
+
+          </div>
+
+
+          {% if request.GET.sent == "1" %}
+
+            <div class="form-ok">
+              {{ value.success_text }}
+            </div>
+
+          {% elif request.GET.sent == "0" %}
+
+            <div class="form-err">
+              {{ value.error_text }}
+            </div>
+
+          {% endif %}
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% endwith %}
+{% endwith %}

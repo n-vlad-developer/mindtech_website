@@ -1,0 +1,24 @@
+<section class="hero">
+  <div class="hero-orbit">
+    <div class="orbit-dot dot-1"></div>
+    <div class="orbit-dot dot-2"></div>
+    <div class="orbit-dot dot-3"></div>
+  </div>
+
+  <div class="container hero-inner reveal">
+    <div class="hero-content">
+      {% if value.label %}<p class="hero-label">{{ value.label }}</p>{% endif %}
+      <h1>{{ value.title }}</h1>
+      {% if value.text %}<p class="hero-text">{{ value.text }}</p>{% endif %}
+
+      <div class="hero-actions">
+        {% if value.primary_text %}
+          <a href="#{{ value.primary_anchor|default:'contacts' }}" class="btn-primary">{{ value.primary_text }}</a>
+        {% endif %}
+        {% if value.secondary_text %}
+          <a href="#{{ value.secondary_anchor|default:'services' }}" class="btn-secondary">{{ value.secondary_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

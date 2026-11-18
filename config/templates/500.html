@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>500</title>
+
+<style>
+:root {
+  --bg: #020617;
+  --neon: #fb7185;   /* розово-красный */
+  --accent: #fbbf24; /* янтарный */
+  --text: #e5e7eb;
+  --muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background:
+    radial-gradient(1200px at 20% 25%, rgba(251,113,133,.12), transparent 42%),
+    radial-gradient(1200px at 85% 80%, rgba(251,191,36,.08), transparent 45%),
+    #020617;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  max-width: 720px;
+  padding: 40px;
+  animation: appear 1.1s ease-out forwards;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.code {
+  font-size: 140px;
+  font-weight: 900;
+  letter-spacing: -8px;
+  line-height: 1;
+  background: linear-gradient(90deg, var(--neon), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: flicker 2.7s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(251,113,133,.25)); transform: translateY(0); }
+  35% { filter: drop-shadow(0 0 28px rgba(251,113,133,.55)); transform: translateY(-1px); }
+  65% { filter: drop-shadow(0 0 18px rgba(251,191,36,.35)); transform: translateY(1px); }
+}
+
+h1 {
+  margin: 16px 0 8px;
+  font-size: 28px;
+  font-weight: 650;
+}
+
+p {
+  margin: 0;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.meme {
+  margin-top: 28px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  color: #94a3b8;
+  opacity: 0.92;
+  line-height: 1.35;
+}
+
+.scan {
+  margin: 14px auto 0;
+  width: min(520px, 92vw);
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(148,163,184,.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.scan::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(251,191,36,.55), transparent);
+  transform: translateX(-60%);
+  animation: sweep 1.6s linear infinite;
+}
+
+@keyframes sweep {
+  to { transform: translateX(220%); }
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 12px;
+  color: #475569;
+  letter-spacing: .04em;
+}
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="code">500</div>
+    <h1>Внутренняя ошибка сервера</h1>
+    <p>
+      Сервер сейчас “в процессе осознания случившегося”.
+      Попробуй ещё раз чуть позже.
+    </p>
+
+    <div class="meme">
+      incident: acknowledged<br>
+      status: we are fine™<br>
+      reality: not really
+    </div>
+
+    <div class="scan" aria-hidden="true"></div>
+
+    <div class="footer">
+      MindTech API · production mode
+    </div>
+  </div>
+</body>
+</html>

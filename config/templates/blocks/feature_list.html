@@ -1,0 +1,10 @@
+<div class="project-features">
+  {% for it in value %}
+    <div class="project-feature">
+      <div class="project-feature-title">{{ it.title }}</div>
+      {% if it.text %}
+        <div class="project-feature-text">{{ it.text }}</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>

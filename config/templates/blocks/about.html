@@ -1,0 +1,13 @@
+<section class="section" id="{{ value.section_id|default:'about' }}">
+  <div class="container about-grid reveal">
+    <div>
+      <h2>{{ value.title }}</h2>
+      {% if value.text %}<p>{{ value.text }}</p>{% endif %}
+    </div>
+    {% if value.note %}
+      <div class="about-note">
+        <p>{{ value.note }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>

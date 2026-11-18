@@ -1,0 +1,106 @@
+{% load static wagtailimages_tags wagtailcore_tags site_tags %}
+
+{% with branding=settings.home.SiteBrandingSettings %}
+{% with current=request.LANGUAGE_CODE|slice:":2" %}
+
+{% wagtail_site as current_site %}
+
+<header class="header">
+  <div class="container header-inner">
+
+    <!-- Логотип ведёт на локализованную главную страницу -->
+    <a href="{% pageurl current_site.root_page.localized %}" class="logo">
+
+      {% if branding.logo %}
+        {% image branding.logo fill-80x80 as logo_img %}
+        <img src="{{ logo_img.url }}" alt="logo">
+      {% else %}
+        <img src="{% static 'img/logo-mind.png' %}" alt="logo">
+      {% endif %}
+
+      <div class="logo-text">
+
+        <span class="logo-title">
+          {% if current == "en" %}
+            {{ branding.brand_title_en|default:branding.brand_title }}
+
+          {% elif current == "kk" %}
+            {% if branding.brand_title_kk %}
+              {{ branding.brand_title_kk }}
+            {% else %}
+              {{ branding.brand_title }}
+            {% endif %}
+
+          {% else %}
+            {{ branding.brand_title }}
+          {% endif %}
+        </span>
+
+        <span class="logo-subtitle">
+          {% if current == "en" %}
+            {{ branding.brand_subtitle_en|default:branding.brand_subtitle }}
+
+          {% elif current == "kk" %}
+            {% if branding.brand_subtitle_kk %}
+              {{ branding.brand_subtitle_kk }}
+            {% else %}
+              {{ branding.brand_subtitle }}
+            {% endif %}
+
+          {% else %}
+            {{ branding.brand_subtitle }}
+          {% endif %}
+        </span>
+
+      </div>
+    </a>
+
+    <nav class="nav">
+      {% for item in nav_items %}
+        <a href="{% nav_href item %}">
+          {{ item.title }}
+        </a>
+      {% endfor %}
+    </nav>
+
+    <div class="lang-switch" id="langSwitch">
+
+      <a
+        class="lang-btn {% if current == 'ru' %}active{% endif %}"
+        href="{% translation_url page 'ru' %}"
+      >
+        RU
+      </a>
+
+      <a
+        class="lang-btn {% if current == 'en' %}active{% endif %}"
+        href="{% translation_url page 'en' %}"
+      >
+        EN
+      </a>
+
+      <a
+        class="lang-btn {% if current == 'kk' %}active{% endif %}"
+        href="{% translation_url page 'kk' %}"
+      >
+        KZ
+      </a>
+
+    </div>
+
+    <button
+      class="burger"
+      id="burgerBtn"
+      type="button"
+      aria-label="Menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+</header>
+
+{% endwith %}
+{% endwith %}

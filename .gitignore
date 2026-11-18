@@ -1,0 +1,53 @@
+# Django / Wagtail
+/media/
+/mindtech-media/
+/static/
+/staticfiles/
+/iis/
+*.sqlite3
+
+# Environment and local secrets
+/.env
+/.env.*
+!/.env.example
+!/.env.sample
+
+# Python
+/.venv/
+/venv/
+/env/
+__pycache__/
+*.pyc
+.python-version
+
+# Local files and tools
+.DS_Store
+*.swp
+/tmp/
+/.vagrant/
+/Vagrantfile.local
+/.idea/
+.vscode/
+coverage
+
+# Node.js
+node_modules/
+/npm-debug.log
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg

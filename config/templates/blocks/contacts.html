@@ -1,0 +1,29 @@
+{% load wagtailcore_tags %}
+{% with branding=settings.home.SiteBrandingSettings %}
+
+<section class="section section-contacts" id="{{ value.section_id|default:'contacts' }}">
+  <div class="container contacts-layout reveal">
+    <div>
+      <h2>{{ value.title }}</h2>
+      <p>{{ value.text }}</p>
+    </div>
+
+    <div class="contacts-list">
+      <div class="contacts-item">
+        <span class="contacts-label">{{ value.email_label|default:"Email" }}</span>
+        {% if branding.email %}
+          <a href="mailto:{{ branding.email }}">{{ branding.email }}</a>
+        {% endif %}
+      </div>
+
+      <div class="contacts-item">
+        <span class="contacts-label">{{ value.phone_label_title|default:"Телефон" }}</span>
+        {% if branding.phone_url and branding.phone_label %}
+          <a href="{{ branding.phone_url }}" target="_blank" rel="noopener">{{ branding.phone_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endwith %}

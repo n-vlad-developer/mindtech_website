@@ -1,0 +1,18 @@
+<section class="psec pfaq" id="{{ value.section_id|default:'faq' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+  </div>
+
+  {% if value.items %}
+    <div class="pfaq-list">
+      {% for it in value.items %}
+        <details class="pfaq-item">
+          <summary class="pfaq-q">{{ it.q }}</summary>
+          <div class="pfaq-a">{{ it.a }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="pmuted">Добавь вопросы/ответы в блок FAQ.</div>
+  {% endif %}
+</section>

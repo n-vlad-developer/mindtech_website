@@ -1,0 +1,19 @@
+<section class="psec pstats" id="{{ value.section_id|default:'stats' }}">
+  <div class="phead">
+    <h3 class="ptitle">{{ value.title }}</h3>
+  </div>
+
+  {% if value.stats %}
+    <div class="pstats-grid">
+      {% for s in value.stats %}
+        <div class="pstat">
+          <div class="pstat-val">{{ s.value }}</div>
+          <div class="pstat-lb">{{ s.label }}</div>
+          {% if s.note %}<div class="pstat-note">{{ s.note }}</div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="pmuted">Этот блок можно оставить пустым, если пока нет цифр.</div>
+  {% endif %}
+</section>
