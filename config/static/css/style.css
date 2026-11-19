@@ -587,6 +587,20 @@ body.no-scroll .header{
   color: #6b7280;
 }
 
+/* Ссылка из карточки услуги на страницу (появляется, только если задана в админке) */
+.card-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+.card-link:hover {
+  text-decoration: underline;
+}
+
 /* ЭТАПЫ */
 
 .steps {

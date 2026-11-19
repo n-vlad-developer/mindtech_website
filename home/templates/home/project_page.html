@@ -28,7 +28,11 @@
       </div>
 
       <div class="project-head-text">
-        <div class="project-head-title">{{ page.title }}</div>
+        {% if page.primary_hero_id %}
+          <div class="project-head-title">{{ page.title }}</div>
+        {% else %}
+          <h1 class="project-head-title">{{ page.title }}</h1>
+        {% endif %}
         {% if page.card_description %}
           <div class="project-head-sub">{{ page.card_description }}</div>
         {% endif %}
@@ -42,6 +46,8 @@
           <a class="btn-secondary" href="{{ page.get_parent.url }}">
             {% if request.LANGUAGE_CODE|slice:":2" == "en" %}
               Back to projects
+            {% elif request.LANGUAGE_CODE|slice:":2" == "kk" %}
+              Жобаларға оралу
             {% else %}
               Назад к проектам
             {% endif %}
@@ -51,11 +57,17 @@
     </div>
 
     <div class="project-body">
+      {% with hero_id=page.primary_hero_id %}
       {% for block in page.body %}
         <div class="reveal">
-          {% include_block block %}
+          {% if block.id == hero_id %}
+            {% include_block block with hero_is_h1=True %}
+          {% else %}
+            {% include_block block %}
+          {% endif %}
         </div>
       {% endfor %}
+      {% endwith %}
     </div>
 
   </div>

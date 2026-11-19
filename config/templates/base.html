@@ -1,78 +1,14 @@
-{% load static wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailcore_tags wagtailimages_tags seo_tags %}
 
 <!doctype html>
-<html lang="{{ request.LANGUAGE_CODE|slice:':2' }}">
+<html lang="{% seo_lang %}">
 <head>
   <meta charset="utf-8">
-
-  <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  {% if page.search_description %}
-    <meta name="description" content="{{ page.search_description }}">
-  {% else %}
-    <meta name="description" content="Mind Technology — разработка цифровых и аппаратных решений для бизнеса: web, backend, мобильные приложения, IoT и инфраструктура.">
-  {% endif %}
-
   <meta name="theme-color" content="#020617">
 
-  {% with site_url="https://mindtech.kz" %}
-    <link rel="canonical" href="{{ site_url }}{{ request.get_full_path }}">
-
-    {% with og_title=page.seo_title|default:page.title %}
-    {% with og_desc=page.search_description|default:"Разрабатываем цифровые и аппаратные решения для бизнеса: web, backend, мобильные приложения, IoT и инфраструктура." %}
-
-      {% with ua=request.META.HTTP_USER_AGENT|default:"" %}
-        {% if "WhatsApp" in ua %}
-          {% with og_image=site_url|add:"/static/img/og-cover-wa.png" %}
-            <meta property="og:image" content="{{ og_image }}?v=2">
-            <meta property="og:image:secure_url" content="{{ og_image }}?v=2">
-            <meta property="og:image:type" content="image/png">
-            <meta property="og:image:alt" content="Mind Technology">
-          {% endwith %}
-        {% else %}
-          {% with og_image=site_url|add:"/static/img/og-cover.png" %}
-            <meta property="og:image" content="{{ og_image }}?v=12">
-            <meta property="og:image:secure_url" content="{{ og_image }}?v=12">
-            <meta property="og:image:type" content="image/png">
-            <meta property="og:image:alt" content="Mind Technology — цифровые и аппаратные решения для бизнеса">
-          {% endwith %}
-        {% endif %}
-      {% endwith %}
-
-      <meta property="og:type" content="website">
-      <meta property="og:site_name" content="Mind Technology">
-      <meta property="og:title" content="{{ og_title }}">
-      <meta property="og:description" content="{{ og_desc }}">
-      <meta property="og:url" content="{{ site_url }}{{ request.get_full_path }}">
-
-      {% with lang=request.LANGUAGE_CODE|slice:":2" %}
-        {% if lang == "en" %}
-          <meta property="og:locale" content="en_US">
-          <meta property="og:locale:alternate" content="ru_RU">
-          <meta property="og:locale:alternate" content="kk_KZ">
-
-        {% elif lang == "kk" %}
-          <meta property="og:locale" content="kk_KZ">
-          <meta property="og:locale:alternate" content="ru_RU">
-          <meta property="og:locale:alternate" content="en_US">
-
-        {% else %}
-          <meta property="og:locale" content="ru_RU">
-          <meta property="og:locale:alternate" content="en_US">
-          <meta property="og:locale:alternate" content="kk_KZ">
-        {% endif %}
-      {% endwith %}
-
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:title" content="{{ og_title }}">
-      <meta name="twitter:description" content="{{ og_desc }}">
-      <meta name="twitter:image" content="{{ site_url }}/static/img/og-cover.png?v=12">
-      <meta name="twitter:image:alt" content="Mind Technology — цифровые и аппаратные решения для бизнеса">
-
-    {% endwith %}
-    {% endwith %}
-  {% endwith %}
+  {# title, description, robots, canonical, hreflang, Open Graph, JSON-LD #}
+  {% seo_head %}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

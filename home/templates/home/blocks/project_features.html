@@ -2,7 +2,7 @@
 
 <section class="psec pfeatures" id="{{ value.section_id|default:'features' }}">
   <div class="phead">
-    <h3 class="ptitle">{{ value.title }}</h3>
+    <h2 class="ptitle">{{ value.title }}</h2>
     {% if value.subtitle %}<p class="psub">{{ value.subtitle }}</p>{% endif %}
   </div>
 
@@ -13,7 +13,7 @@
           <div class="pcard-ic">
             {% if c.icon %}
               {% image c.icon fill-72x72 as ic %}
-              <img src="{{ ic.url }}" alt="{{ c.title }}">
+              <img src="{{ ic.url }}" alt="{{ c.title }}" loading="lazy" decoding="async">
             {% else %}
               <div class="pcard-ic-fallback"></div>
             {% endif %}

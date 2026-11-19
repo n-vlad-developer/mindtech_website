@@ -378,10 +378,21 @@ def translation_url(
         pass
 
     # =========================================================
-    # Перевода страницы нет
+    # Перевода страницы нет — ведём на ближайший переведённый
+    # раздел (например, список проектов нужного языка), а если
+    # такого нет — на главную нужной локали.
     #
     # Не отправляем на "/",
     # потому что это сбросит язык на русский.
     # =========================================================
+
+    if locale:
+        try:
+            for ancestor in page.get_ancestors().filter(depth__gt=2).order_by("-depth"):
+                translated = ancestor.get_translation_or_none(locale)
+                if translated and translated.live:
+                    return translated.url
+        except Exception:
+            pass
 
     return home_url

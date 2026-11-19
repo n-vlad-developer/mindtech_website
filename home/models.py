@@ -3,6 +3,7 @@
 from django.db import models
 
 from wagtail import blocks
+from wagtail.admin.panels import HelpPanel
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.contrib.settings.models import BaseSiteSetting, register_setting
 from wagtail.fields import StreamField
@@ -11,6 +12,84 @@ from wagtail.models import Locale, Page, TranslatableMixin
 from wagtail.snippets.models import register_snippet
 from django.utils.text import slugify
 from wagtail.fields import RichTextField
+
+
+# =========================
+# SEO: общие поля для всех страниц
+# =========================
+# Стандартные поля Wagtail (вкладка «Продвижение»): slug, seo_title
+# («Заголовок страницы» для <title>), search_description (meta description).
+# Здесь добавляем только то, чего в Wagtail нет: OG-картинку и noindex.
+
+class SeoMixin(models.Model):
+    og_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name="Изображение для соцсетей и поисковиков (OG)",
+        help_text="Рекомендуемый размер 1200×630. Если пусто — обложка проекта или изображение по умолчанию из настроек.",
+    )
+    noindex = models.BooleanField(
+        default=False,
+        verbose_name="Скрыть от поисковых систем (noindex)",
+        help_text="Страница останется доступной по ссылке, но получит meta robots noindex и пропадёт из sitemap.xml.",
+    )
+
+    seo_panels = [
+        HelpPanel(
+            content=(
+                "<p><b>Заголовок страницы (title)</b> и <b>Описание для поиска (meta description)</b> — "
+                "поля выше. Если они пустые, сайт подставит название страницы и описание по умолчанию. "
+                "Рекомендуемая длина: title до ~65 символов, description 120–160 символов.</p>"
+            )
+        ),
+        FieldPanel("og_image"),
+        FieldPanel("noindex"),
+    ]
+
+    schema_page_type = "WebPage"
+
+    class Meta:
+        abstract = True
+
+    # --- переопределяется в конкретных моделях ---
+    def get_seo_fallback_description(self) -> str:
+        return ""
+
+    def get_seo_image(self):
+        return None
+
+    def get_faq_items(self):
+        return []
+
+    # --- sitemap.xml ---
+    def get_sitemap_urls(self, request=None):
+        from home import seo
+
+        if not seo.is_indexable(self):
+            return []
+        location = seo.absolute_url(self)
+        if not location:
+            return []
+        return [
+            {
+                "location": location,
+                "lastmod": self.last_published_at or self.latest_revision_created_at,
+                "alternates": [
+                    {"lang_code": lang, "location": url}
+                    for lang, url in seo.get_alternates(self)
+                ],
+            }
+        ]
+
+
+def seo_promote_panels(extra=None):
+    panels = list(SeoMixin.seo_panels)
+    if extra:
+        panels += extra
+    return Page.promote_panels + [MultiFieldPanel(panels, heading="SEO: дополнительно")]
 
 
 # =========================
@@ -305,6 +384,99 @@ class SiteBrandingSettings(BaseSiteSetting):
         help_text="Страница, на которую ведёт кнопка «Документы» в футере",
     )
 
+    # ---------------- SEO ----------------
+    seo_default_description_ru = models.TextField(
+        max_length=300,
+        blank=True,
+        default=(
+            "Mind Technology — IT-компания из Караганды: разработка программного обеспечения, "
+            "системная интеграция, автоматизация бизнеса, IoT и внедрение ИИ-решений в Казахстане."
+        ),
+        verbose_name="Описание по умолчанию RU",
+        help_text="Используется, если у страницы не заполнено «Описание для поиска», и в разметке организации.",
+    )
+    seo_default_description_en = models.TextField(
+        max_length=300,
+        blank=True,
+        default=(
+            "Mind Technology is an IT company based in Karaganda, Kazakhstan: custom software development, "
+            "system integration, business automation, IoT and AI solutions."
+        ),
+        verbose_name="Описание по умолчанию EN",
+    )
+    seo_default_description_kk = models.TextField(
+        max_length=300,
+        blank=True,
+        default=(
+            "Mind Technology — Қарағандыдағы IT-компания: бағдарламалық жасақтама әзірлеу, жүйелік интеграция, "
+            "бизнесті автоматтандыру, IoT және жасанды интеллект шешімдерін енгізу."
+        ),
+        verbose_name="Описание по умолчанию KZ",
+    )
+    seo_default_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        verbose_name="OG-изображение по умолчанию",
+        help_text="Если пусто — используется static/img/og-cover.png.",
+    )
+
+    # ---------------- Организация (schema.org) ----------------
+    ORG_TYPE_CHOICES = [
+        ("Organization", "Organization — организация"),
+        ("ProfessionalService", "ProfessionalService — офис, куда можно прийти клиенту"),
+    ]
+    org_schema_type = models.CharField(
+        max_length=40,
+        choices=ORG_TYPE_CHOICES,
+        default="Organization",
+        verbose_name="Тип организации в разметке",
+    )
+    legal_name = models.CharField(
+        max_length=160,
+        blank=True,
+        default="",
+        verbose_name="Юридическое название",
+        help_text="Как в регистрационных документах. Если пусто — не выводится.",
+    )
+    street_address = models.CharField(max_length=160, blank=True, default="ул. Жамбыла, 42", verbose_name="Улица и дом")
+    address_locality = models.CharField(max_length=80, blank=True, default="Караганда", verbose_name="Город")
+    address_region = models.CharField(max_length=80, blank=True, default="", verbose_name="Область")
+    postal_code = models.CharField(max_length=20, blank=True, default="", verbose_name="Почтовый индекс")
+    address_country = models.CharField(max_length=2, blank=True, default="KZ", verbose_name="Страна (код ISO)")
+    area_served = models.CharField(
+        max_length=80,
+        blank=True,
+        default="Kazakhstan",
+        verbose_name="География услуг",
+        help_text="Страна, где компания оказывает услуги (на английском, для schema.org).",
+    )
+    same_as = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="Официальные профили компании",
+        help_text="По одной ссылке в строке: 2ГИС, Instagram, LinkedIn и т.п. Только официальные профили компании.",
+    )
+
+    # ---------------- Подтверждение в поисковых системах ----------------
+    google_site_verification = models.CharField(
+        max_length=120, blank=True, default="",
+        verbose_name="Google Search Console",
+        help_text="Только значение content из метатега google-site-verification",
+    )
+    yandex_verification = models.CharField(
+        max_length=120, blank=True, default="",
+        verbose_name="Яндекс Вебмастер",
+        help_text="Только значение content из метатега yandex-verification",
+    )
+    bing_verification = models.CharField(
+        max_length=120, blank=True, default="",
+        verbose_name="Bing Webmaster Tools",
+        help_text="Только значение content из метатега msvalidate.01",
+    )
+
     panels = [
         MultiFieldPanel([FieldPanel("logo")], heading="Лого"),
         MultiFieldPanel(
@@ -362,6 +534,37 @@ class SiteBrandingSettings(BaseSiteSetting):
             ],
             heading="Форма обратной связи",
         ),
+        MultiFieldPanel(
+            [
+                FieldPanel("seo_default_description_ru"),
+                FieldPanel("seo_default_description_en"),
+                FieldPanel("seo_default_description_kk"),
+                FieldPanel("seo_default_image"),
+            ],
+            heading="SEO: значения по умолчанию",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("org_schema_type"),
+                FieldPanel("legal_name"),
+                FieldPanel("street_address"),
+                FieldPanel("address_locality"),
+                FieldPanel("address_region"),
+                FieldPanel("postal_code"),
+                FieldPanel("address_country"),
+                FieldPanel("area_served"),
+                FieldPanel("same_as"),
+            ],
+            heading="SEO: организация (структурированные данные)",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("google_site_verification"),
+                FieldPanel("yandex_verification"),
+                FieldPanel("bing_verification"),
+            ],
+            heading="SEO: подтверждение прав в поисковых системах",
+        ),
     ]
 
 
@@ -386,6 +589,12 @@ class HeroBlock(blocks.StructBlock):
 class ServicesCardBlock(blocks.StructBlock):
     title = blocks.CharBlock()
     text = blocks.TextBlock()
+    link_page = blocks.PageChooserBlock(
+        required=False,
+        label="Ссылка на страницу (необязательно)",
+        help_text="Например, страница услуги или проекта.",
+    )
+    link_text = blocks.CharBlock(required=False, label="Текст ссылки", help_text="По умолчанию: «Подробнее»")
 
     class Meta:
         label = "Карточка услуги"
@@ -486,7 +695,7 @@ class FooterMegaBlock(blocks.StructBlock):
 # PAGES: главная + проекты
 # =========================
 
-class HomePage(Page):
+class HomePage(SeoMixin, Page):
     body = StreamField(
         [
             ("hero", HeroBlock()),
@@ -503,6 +712,9 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         FieldPanel("body"),
     ]
+
+    # Описание по умолчанию для главной — из «Настройки → Site branding → SEO»
+    promote_panels = seo_promote_panels()
 
     def get_context(self, request):
         ctx = super().get_context(request)
@@ -530,7 +742,7 @@ class HomePage(Page):
         return ctx
 
 
-class ProjectsIndexPage(Page):
+class ProjectsIndexPage(SeoMixin, Page):
     intro_title = models.CharField(max_length=120, blank=True, default="Проекты")
     intro_text = models.TextField(
         blank=True,
@@ -547,8 +759,18 @@ class ProjectsIndexPage(Page):
         )
     ]
 
+    promote_panels = seo_promote_panels()
+
+    schema_page_type = "CollectionPage"
+
     parent_page_types = ["home.HomePage"]
     subpage_types = ["home.ProjectPage"]
+
+    def get_seo_fallback_description(self) -> str:
+        return self.intro_text
+
+    def get_breadcrumb_title(self) -> str:
+        return self.intro_title
 
     template = "home/projects_index_page.html"
 
@@ -762,7 +984,7 @@ class ProjectCTAblock(blocks.StructBlock):
         template = "home/blocks/project_cta.html"
 
 
-class ProjectPage(Page):
+class ProjectPage(SeoMixin, Page):
     card_title = models.CharField(max_length=80, blank=True, help_text="Если пусто — заголовок страницы")
     card_description = models.TextField(max_length=240, blank=True)
     card_icon = models.ForeignKey(
@@ -815,18 +1037,65 @@ class ProjectPage(Page):
         FieldPanel("body"),
     ]
 
+    SCHEMA_CHOICES = [
+        ("webpage", "Страница проекта / продукта"),
+        ("service", "Услуга компании (schema.org Service)"),
+    ]
+    schema_type = models.CharField(
+        max_length=20,
+        choices=SCHEMA_CHOICES,
+        default="webpage",
+        verbose_name="Тип страницы для структурированных данных",
+        help_text="«Услуга» — для страниц, описывающих услугу компании (системная интеграция, ИИ-агенты).",
+    )
+
+    promote_panels = seo_promote_panels([FieldPanel("schema_type")])
+
     parent_page_types = ["home.ProjectsIndexPage"]
     subpage_types = []
 
     template = "home/project_page.html"
 
+    def get_seo_fallback_description(self) -> str:
+        if self.card_description:
+            return self.card_description
+        for block in self.body:
+            if block.block_type == "project_hero" and block.value.get("subtitle"):
+                return block.value.get("subtitle")
+        return ""
+
+    def get_seo_image(self):
+        for block in self.body:
+            if block.block_type == "project_hero" and block.value.get("cover"):
+                return block.value.get("cover")
+        return None
+
+    def get_faq_items(self):
+        items = []
+        for block in self.body:
+            if block.block_type == "faq":
+                for item in block.value.get("items") or []:
+                    items.append((item.get("q"), item.get("a")))
+        return items
+
+    @property
+    def primary_hero_id(self):
+        """id первого hero-блока: его заголовок выводится как <h1>."""
+        for block in self.body:
+            if block.block_type == "project_hero":
+                return block.id
+        return None
+
     def get_card_title(self):
         return self.card_title.strip() if self.card_title else self.title
+
+    def get_breadcrumb_title(self) -> str:
+        return self.get_card_title()
 
     def get_cta_url(self):
         return self.external_url.strip() if self.external_url else self.url
 
-class DocumentsPage(Page):
+class DocumentsPage(SeoMixin, Page):
     intro = models.TextField(
         blank=True,
         default="",
@@ -838,8 +1107,15 @@ class DocumentsPage(Page):
         FieldPanel("intro"),
     ]
 
+    promote_panels = seo_promote_panels()
+
+    schema_page_type = "CollectionPage"
+
     parent_page_types = ["home.HomePage"]
     subpage_types = ["home.LegalPage"]
+
+    def get_seo_fallback_description(self) -> str:
+        return self.intro
 
     max_count = 1
 
@@ -849,7 +1125,7 @@ class DocumentsPage(Page):
         verbose_name = "Документы"
 
 
-class LegalPage(Page):
+class LegalPage(SeoMixin, Page):
     intro = models.TextField(
         blank=True,
         default="",
@@ -880,10 +1156,17 @@ class LegalPage(Page):
         FieldPanel("body"),
     ]
 
+    promote_panels = seo_promote_panels()
+
     parent_page_types = ["home.DocumentsPage"]
     subpage_types = []
 
     template = "home/legal_page.html"
+
+    def get_seo_fallback_description(self) -> str:
+        if self.intro:
+            return self.intro
+        return self.body or ""
 
     class Meta:
         verbose_name = "Документ"
