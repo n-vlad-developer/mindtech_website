@@ -1,0 +1,48 @@
+{# Все SEO-метатеги страницы. Данные собирает home/seo.py (тег seo_head). #}
+<title>{{ seo_title }}</title>
+{% if seo_description %}<meta name="description" content="{{ seo_description }}">{% endif %}
+<meta name="robots" content="{{ seo_robots }}">
+{% if seo_canonical %}<link rel="canonical" href="{{ seo_canonical }}">{% endif %}
+{% for lang, url in seo_alternates %}<link rel="alternate" hreflang="{{ lang }}" href="{{ url }}">
+{% endfor %}{% if seo_x_default %}<link rel="alternate" hreflang="x-default" href="{{ seo_x_default }}">
+{% endif %}
+{% if seo_google_verification %}<meta name="google-site-verification" content="{{ seo_google_verification }}">{% endif %}
+{% if seo_yandex_verification %}<meta name="yandex-verification" content="{{ seo_yandex_verification }}">{% endif %}
+{% if seo_bing_verification %}<meta name="msvalidate.01" content="{{ seo_bing_verification }}">{% endif %}
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mind Technology">
+<meta property="og:title" content="{{ seo_title }}">
+{% if seo_description %}<meta property="og:description" content="{{ seo_description }}">{% endif %}
+{% if seo_og_url %}<meta property="og:url" content="{{ seo_og_url }}">{% endif %}
+<meta property="og:locale" content="{{ seo_og_locale }}">
+{% for loc in seo_og_locale_alternates %}<meta property="og:locale:alternate" content="{{ loc }}">
+{% endfor %}
+{% with ua=request.META.HTTP_USER_AGENT|default:"" %}
+{% if seo_og_image %}
+<meta property="og:image" content="{{ seo_og_image.url }}">
+<meta property="og:image:width" content="{{ seo_og_image.width }}">
+<meta property="og:image:height" content="{{ seo_og_image.height }}">
+<meta property="og:image:alt" content="{{ seo_og_image.alt|default:seo_title }}">
+<meta name="twitter:image" content="{{ seo_og_image.url }}">
+{% elif "WhatsApp" in ua %}
+<meta property="og:image" content="https://mindtech.kz/static/img/og-cover-wa.png?v=2">
+<meta property="og:image:secure_url" content="https://mindtech.kz/static/img/og-cover-wa.png?v=2">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="Mind Technology">
+<meta name="twitter:image" content="https://mindtech.kz/static/img/og-cover.png?v=12">
+{% else %}
+<meta property="og:image" content="https://mindtech.kz/static/img/og-cover.png?v=12">
+<meta property="og:image:secure_url" content="https://mindtech.kz/static/img/og-cover.png?v=12">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ seo_title }}">
+<meta name="twitter:image" content="https://mindtech.kz/static/img/og-cover.png?v=12">
+{% endif %}
+{% endwith %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ seo_title }}">
+{% if seo_description %}<meta name="twitter:description" content="{{ seo_description }}">{% endif %}
+
+<script type="application/ld+json">{{ seo_json_ld }}</script>

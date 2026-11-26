@@ -2,7 +2,7 @@
 
 <section class="psec proles" id="{{ value.section_id|default:'roles' }}">
   <div class="phead">
-    <h3 class="ptitle">{{ value.title }}</h3>
+    <h2 class="ptitle">{{ value.title }}</h2>
     {% if value.subtitle %}<p class="psub">{{ value.subtitle }}</p>{% endif %}
   </div>
 
@@ -13,7 +13,7 @@
           <div class="pcard-ic">
             {% if r.icon %}
               {% image r.icon fill-92x92 as ic %}
-              <img src="{{ ic.url }}" alt="{{ r.title }}">
+              <img src="{{ ic.url }}" alt="{{ r.title }}" loading="lazy" decoding="async">
             {% else %}
               <div class="pcard-ic-fallback"></div>
             {% endif %}

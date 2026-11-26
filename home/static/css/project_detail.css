@@ -951,3 +951,13 @@ section.psec.pcta::after{
     grid-template-columns: 1fr;
   }
 }
+
+/* SEO: заголовки стали h1/h2 вместо div/h3 — сохраняем прежний вид */
+h1.project-head-title,
+h1.phero-title{
+  margin: 0;
+}
+
+h2.psteps-title{
+  margin-block: 1em;
+}

@@ -3,14 +3,14 @@
 <section class="psec ptwocol" id="{{ value.section_id|default:'overview' }}">
   <div class="ptwocol-grid {% if value.reverse %}rev{% endif %}">
     <div class="ptwocol-text">
-      {% if value.title %}<h3 class="ptitle">{{ value.title }}</h3>{% endif %}
+      {% if value.title %}<h2 class="ptitle">{{ value.title }}</h2>{% endif %}
       <div class="prich">{{ value.left_text|richtext }}</div>
     </div>
 
     <div class="ptwocol-media">
       {% if value.right_image %}
         {% image value.right_image fill-980x760 as im %}
-        <img class="pimg" src="{{ im.url }}" alt="{{ value.right_caption|default:value.title }}">
+        <img class="pimg" src="{{ im.url }}" alt="{{ value.right_caption|default:value.title|default:page.title }}" loading="lazy" decoding="async">
       {% else %}
         <div class="pimg pimg--empty"></div>
       {% endif %}

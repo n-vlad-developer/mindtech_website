@@ -94,6 +94,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
 
     # PostgreSQL search
     "django.contrib.postgres",
@@ -114,6 +115,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.contrib.settings",
+    "wagtail.contrib.sitemaps",
     "wagtail.embeds",
     "wagtail.locales",
 
@@ -412,6 +414,35 @@ WAGTAILDOCS_EXTENSIONS = [
     "xlsx",
     "zip",
 ]
+
+
+# ============================================================
+# SEO
+# ============================================================
+
+# Основной адрес сайта: canonical, hreflang, sitemap.xml, Open Graph, JSON-LD.
+SEO_BASE_URL = env(
+    "SEO_BASE_URL",
+    "https://mindtech.kz",
+).rstrip("/")
+
+# IndexNow (Bing, Яндекс и др.): уведомление о публикации страниц.
+# Ключ — произвольная строка 8–128 символов [A-Za-z0-9-]; сайт отдаёт его
+# по адресу /<ключ>.txt. Пустой ключ или INDEXNOW_ENABLED=False — выключено.
+INDEXNOW_ENABLED = env_bool(
+    "INDEXNOW_ENABLED",
+    False,
+)
+
+INDEXNOW_KEY = env(
+    "INDEXNOW_KEY",
+    "",
+).strip()
+
+INDEXNOW_ENDPOINT = env(
+    "INDEXNOW_ENDPOINT",
+    "https://api.indexnow.org/indexnow",
+)
 
 
 # ============================================================

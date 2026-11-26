@@ -3,7 +3,11 @@
 <section class="psec phero" id="top">
   <div class="phero-grid">
     <div class="phero-left">
-      <div class="phero-title">{{ value.title }}</div>
+      {% if hero_is_h1 %}
+        <h1 class="phero-title">{{ value.title }}</h1>
+      {% else %}
+        <div class="phero-title">{{ value.title }}</div>
+      {% endif %}
       {% if value.subtitle %}<div class="phero-sub">{{ value.subtitle }}</div>{% endif %}
 
       {% if value.quick_items %}
